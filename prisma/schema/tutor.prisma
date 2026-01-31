@@ -1,0 +1,31 @@
+model TutorProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  headline      String?
+  bio           String?
+  hourlyRate    Float
+  experience    Int?
+  qualification String?
+  languages     String[]
+  teachingMode  TeachingMode @default(ONLINE)
+  isVerified    Boolean      @default(false)
+
+  rating       Float @default(0)
+  totalReviews Int   @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories Category[] @relation("TutorCategories")
+  bookings   Booking[]
+  reviews    Review[]
+}
+
+enum TeachingMode {
+  ONLINE
+  OFFLINE
+  BOTH
+}
