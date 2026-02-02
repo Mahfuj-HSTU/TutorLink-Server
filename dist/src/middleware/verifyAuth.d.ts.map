@@ -1,0 +1,1 @@
+{"version":3,"file":"verifyAuth.d.ts","sourceRoot":"","sources":["../../../src/middleware/verifyAuth.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,YAAY,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AAG9D,oBAAY,QAAQ;IAClB,IAAI,SAAS;IACb,KAAK,UAAU;CAChB;AAED,eAAO,MAAM,UAAU,GAAI,GAAG,OAAO,QAAQ,EAAE,MAC/B,KAAK,OAAO,EAAE,KAAK,QAAQ,EAAE,MAAM,YAAY,gDAyB9D,CAAA"}
