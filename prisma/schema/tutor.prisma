@@ -10,6 +10,7 @@ model TutorProfile {
   languages     String[]
   teachingMode  TeachingMode @default(ONLINE)
   isVerified    Boolean      @default(false)
+  isAvailable   Boolean      @default(true)
 
   rating       Float @default(0)
   totalReviews Int   @default(0)
