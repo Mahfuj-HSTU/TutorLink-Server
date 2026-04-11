@@ -76,10 +76,18 @@ const updateCategories = async (userId: string, categoryIds: string[]) => {
 	})
 }
 
+const updateAvailability = async (userId: string, isAvailable: boolean) => {
+	return prisma.tutorProfile.update({
+		where: { userId },
+		data: { isAvailable }
+	})
+}
+
 export const TutorService = {
 	getAllTutors,
 	getTutorById,
 	createProfile,
 	updateProfile,
-	updateCategories
+	updateCategories,
+	updateAvailability
 }

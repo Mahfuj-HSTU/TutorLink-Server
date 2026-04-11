@@ -24,5 +24,10 @@ router.put(
 	verifyAuth(UserRole.TUTOR),
 	TutorController.updateCategories
 )
+router.put(
+	'/availability',
+	verifyAuth(UserRole.TUTOR),
+	TutorController.updateAvailability
+)
 
 export const TutorRoutes = router

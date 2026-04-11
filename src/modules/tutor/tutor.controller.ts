@@ -56,10 +56,25 @@ const updateCategories = asyncHandler(async (req: Request, res: Response) => {
 	})
 })
 
+const updateAvailability = asyncHandler(async (req: Request, res: Response) => {
+	const userId = req.user.id
+
+	const result = await TutorService.updateAvailability(
+		userId,
+		req.body.isAvailable
+	)
+
+	res.status(200).json({
+		success: true,
+		data: result
+	})
+})
+
 export const TutorController = {
 	getAllTutors,
 	getTutorById,
 	createProfile,
 	updateProfile,
-	updateCategories
+	updateCategories,
+	updateAvailability
 }
