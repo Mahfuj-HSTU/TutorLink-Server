@@ -11,10 +11,10 @@ app.use(
 	cors({
 		origin: process.env.APP_URL!,
 		credentials: true
-	})
+})
 )
 
-app.all('/api/auth/*', toNodeHandler(auth))
+app.use('/api/auth', toNodeHandler(auth))
 
 app.use('/api', MainRouter)
 
