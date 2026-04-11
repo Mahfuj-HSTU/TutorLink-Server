@@ -18,11 +18,11 @@ async function seed() {
 		// Use better-auth API to properly hash password and create related records
 		const res = await auth.api.signUpEmail({
 			body: {
-				email: 'admin@tutorlink.com',
-				password: 'tutorlink_admin123',
+				email: process.env.ADMIN_EMAIL || 'admin@tutorlink.com',
+				password: process.env.ADMIN_PASSWORD || 'tutorlink_admin123',
 				name: 'System Admin',
 				role: 'ADMIN',
-				phone: '+1234567890'
+				phone: '01234567893'
 			}
 		})
 		console.log('Admin seeded successfully!')
