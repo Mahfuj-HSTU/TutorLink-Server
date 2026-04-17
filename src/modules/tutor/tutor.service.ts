@@ -5,7 +5,6 @@ const getAllTutors = async (query: any) => {
 
 	return prisma.tutorProfile.findMany({
 		where: {
-			isVerified: true,
 			isAvailable: true,
 			hourlyRate: {
 				gte: minRate ? Number(minRate) : undefined,
