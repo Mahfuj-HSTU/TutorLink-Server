@@ -15,11 +15,23 @@ export const auth = betterAuth({
 	trustedOrigins: allowedOrigins,
 	user: {
 		additionalFields: {
-			role: { type: 'string', defaultValue: 'USER', required: false },
+			role: {
+				type: 'string',
+				defaultValue: 'STUDENT',
+				required: false,
+				input: true,   // allow client to set role during sign-up
+			},
 			phone: {
 				type: 'string',
-				required: false
-			}
+				required: false,
+				input: true,
+			},
+			isBanned: {
+				type: 'boolean',
+				defaultValue: false,
+				required: false,
+				input: false,  // only admins set this server-side
+			},
 		}
 	},
 	emailAndPassword: {
