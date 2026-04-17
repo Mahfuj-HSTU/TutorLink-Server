@@ -6,6 +6,10 @@ const router = express.Router()
 
 // Public
 router.get('/', TutorController.getAllTutors)
+
+// Tutor: get own profile (must be before /:id)
+router.get('/me', verifyAuth(UserRole.TUTOR), TutorController.getMyProfile)
+
 router.get('/:id', TutorController.getTutorById)
 
 // Tutor Protected

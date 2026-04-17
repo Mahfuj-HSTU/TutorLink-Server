@@ -49,6 +49,23 @@ const getTutorById = async (id: string) => {
 	})
 }
 
+const getMyProfile = async (userId: string) => {
+	return prisma.tutorProfile.findUnique({
+		where: { userId },
+		include: {
+			user: {
+				select: { name: true, image: true, email: true }
+			},
+			categories: true,
+			reviews: {
+				include: {
+					student: { select: { name: true, image: true } }
+				}
+			}
+		}
+	})
+}
+
 const createProfile = async (userId: string, payload: any) => {
 	return prisma.tutorProfile.create({
 		data: {
@@ -86,6 +103,7 @@ const updateAvailability = async (userId: string, isAvailable: boolean) => {
 export const TutorService = {
 	getAllTutors,
 	getTutorById,
+	getMyProfile,
 	createProfile,
 	updateProfile,
 	updateCategories,

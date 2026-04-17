@@ -20,6 +20,17 @@ const getTutorById = asyncHandler(async (req: Request, res: Response) => {
 	})
 })
 
+const getMyProfile = asyncHandler(async (req: Request, res: Response) => {
+	const userId = req.user.id
+
+	const result = await TutorService.getMyProfile(userId)
+
+	res.status(200).json({
+		success: true,
+		data: result
+	})
+})
+
 const createProfile = asyncHandler(async (req: Request, res: Response) => {
 	const userId = req.user.id
 
@@ -73,6 +84,7 @@ const updateAvailability = asyncHandler(async (req: Request, res: Response) => {
 export const TutorController = {
 	getAllTutors,
 	getTutorById,
+	getMyProfile,
 	createProfile,
 	updateProfile,
 	updateCategories,
