@@ -45,9 +45,24 @@ const updateBookingStatus = asyncHandler(
 	}
 )
 
+const cancelStudentBooking = asyncHandler(
+	async (req: Request, res: Response) => {
+		const result = await BookingService.cancelStudentBooking(
+			req.user.id,
+			req.params.id as string
+		)
+
+		res.status(200).json({
+			success: true,
+			data: result
+		})
+	}
+)
+
 export const BookingController = {
 	createBooking,
 	getStudentBookings,
 	getTutorBookings,
-	updateBookingStatus
+	updateBookingStatus,
+	cancelStudentBooking
 }
