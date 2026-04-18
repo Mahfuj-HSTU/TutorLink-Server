@@ -11,11 +11,6 @@ router.get(
 	verifyAuth(UserRole.STUDENT),
 	BookingController.getStudentBookings
 )
-router.patch(
-	'/:id/cancel',
-	verifyAuth(UserRole.STUDENT),
-	BookingController.cancelStudentBooking
-)
 
 // Tutor
 router.get(
@@ -23,9 +18,11 @@ router.get(
 	verifyAuth(UserRole.TUTOR),
 	BookingController.getTutorBookings
 )
+
+// Student + Tutor
 router.patch(
 	'/:id/status',
-	verifyAuth(UserRole.TUTOR),
+	verifyAuth(UserRole.STUDENT, UserRole.TUTOR),
 	BookingController.updateBookingStatus
 )
 

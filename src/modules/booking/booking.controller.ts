@@ -34,22 +34,10 @@ const getTutorBookings = asyncHandler(async (req: Request, res: Response) => {
 const updateBookingStatus = asyncHandler(
 	async (req: Request, res: Response) => {
 		const result = await BookingService.updateBookingStatus(
+			req.user.id,
+			req.user.role,
 			req.params.id as string,
 			req.body.status
-		)
-
-		res.status(200).json({
-			success: true,
-			data: result
-		})
-	}
-)
-
-const cancelStudentBooking = asyncHandler(
-	async (req: Request, res: Response) => {
-		const result = await BookingService.cancelStudentBooking(
-			req.user.id,
-			req.params.id as string
 		)
 
 		res.status(200).json({
@@ -63,6 +51,5 @@ export const BookingController = {
 	createBooking,
 	getStudentBookings,
 	getTutorBookings,
-	updateBookingStatus,
-	cancelStudentBooking
+	updateBookingStatus
 }

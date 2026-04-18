@@ -48,27 +48,24 @@ const getTutorBookings = async (userId: string) => {
 }
 
 const updateBookingStatus = async (
+	callerId: string,
+	callerRole: string,
 	bookingId: string,
 	status: BookingStatus
 ) => {
+	const booking = await prisma.booking.findUnique({ where: { id: bookingId } })
+
+	if (!booking) throw new Error('Booking not found')
+
+	if (callerRole === 'STUDENT') {
+		if (booking.studentId !== callerId) throw new Error('Unauthorised')
+		if (status !== 'CANCELLED') throw new Error('Students can only cancel bookings')
+		if (booking.status !== 'CONFIRMED') throw new Error('Only confirmed bookings can be cancelled')
+	}
+
 	return prisma.booking.update({
 		where: { id: bookingId },
 		data: { status }
-	})
-}
-
-const cancelStudentBooking = async (studentId: string, bookingId: string) => {
-	const booking = await prisma.booking.findUnique({
-		where: { id: bookingId }
-	})
-
-	if (!booking) throw new Error('Booking not found')
-	if (booking.studentId !== studentId) throw new Error('Unauthorised')
-	if (booking.status !== 'CONFIRMED') throw new Error('Only confirmed bookings can be cancelled')
-
-	return prisma.booking.update({
-		where: { id: bookingId },
-		data: { status: 'CANCELLED' }
 	})
 }
 
@@ -76,6 +73,5 @@ export const BookingService = {
 	createBooking,
 	getStudentBookings,
 	getTutorBookings,
-	updateBookingStatus,
-	cancelStudentBooking
+	updateBookingStatus
 }
