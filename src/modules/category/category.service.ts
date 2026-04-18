@@ -13,6 +13,12 @@ const getAllCategories = async () => {
 	})
 }
 
+const getAllCategoriesAdmin = async () => {
+	return prisma.category.findMany({
+		orderBy: [{ isActive: 'desc' }, { name: 'asc' }]
+	})
+}
+
 const createCategory = async (payload: any) => {
 	const slug = slugify(payload.name, { lower: true })
 
@@ -45,6 +51,7 @@ const deleteCategory = async (id: string) => {
 
 export const CategoryService = {
 	getAllCategories,
+	getAllCategoriesAdmin,
 	createCategory,
 	updateCategory,
 	deleteCategory

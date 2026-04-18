@@ -11,6 +11,15 @@ const getAllCategories = asyncHandler(async (req: Request, res: Response) => {
 	})
 })
 
+const getAllCategoriesAdmin = asyncHandler(async (req: Request, res: Response) => {
+	const result = await CategoryService.getAllCategoriesAdmin()
+
+	res.status(200).json({
+		success: true,
+		data: result
+	})
+})
+
 const createCategory = asyncHandler(async (req: Request, res: Response) => {
 	const result = await CategoryService.createCategory(req.body)
 
@@ -43,6 +52,7 @@ const deleteCategory = asyncHandler(async (req: Request, res: Response) => {
 
 export const CategoryController = {
 	getAllCategories,
+	getAllCategoriesAdmin,
 	createCategory,
 	updateCategory,
 	deleteCategory

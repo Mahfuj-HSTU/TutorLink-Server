@@ -8,6 +8,7 @@ const router = express.Router()
 router.get('/', CategoryController.getAllCategories)
 
 // Admin Only
+router.get('/all', verifyAuth(UserRole.ADMIN), CategoryController.getAllCategoriesAdmin)
 router.post('/', verifyAuth(UserRole.ADMIN), CategoryController.createCategory)
 router.patch(
 	'/:id',
