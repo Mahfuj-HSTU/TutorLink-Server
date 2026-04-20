@@ -23,7 +23,8 @@ const getStudentBookings = async (studentId: string) => {
 				include: {
 					user: { select: { name: true, image: true } }
 				}
-			}
+			},
+			review: true
 		},
 		orderBy: { createdAt: 'desc' }
 	})
@@ -61,6 +62,11 @@ const updateBookingStatus = async (
 		if (booking.studentId !== callerId) throw new Error('Unauthorised')
 		if (status !== 'CANCELLED') throw new Error('Students can only cancel bookings')
 		if (booking.status !== 'CONFIRMED') throw new Error('Only confirmed bookings can be cancelled')
+	}
+
+	if (callerRole === 'TUTOR' && status === 'COMPLETED') {
+		if (new Date() < booking.endTime)
+			throw new Error('Session cannot be marked complete before the end time')
 	}
 
 	return prisma.booking.update({
