@@ -9,6 +9,8 @@ model Booking {
 
   price Float
 
+  questions String?
+
   status BookingStatus @default(CONFIRMED)
 
   createdAt DateTime @default(now())

@@ -2,7 +2,11 @@ import type { BookingStatus } from '../../../generated/prisma/enums.ts'
 import prisma from '../../lib/prisma.ts'
 
 const createBooking = async (studentId: string, payload: any) => {
-	const { tutorId, startTime, endTime, price } = payload
+	const { tutorId, startTime, endTime, price, questions } = payload
+
+	if (!questions || !questions.trim()) {
+		throw new Error('Please describe what you want to learn in this session')
+	}
 
 	return prisma.booking.create({
 		data: {
@@ -10,7 +14,8 @@ const createBooking = async (studentId: string, payload: any) => {
 			tutorId,
 			startTime: new Date(startTime),
 			endTime: new Date(endTime),
-			price
+			price,
+			questions: questions.trim()
 		}
 	})
 }
@@ -42,7 +47,8 @@ const getTutorBookings = async (userId: string) => {
 		include: {
 			student: {
 				select: { name: true, image: true }
-			}
+			},
+			review: true
 		},
 		orderBy: { createdAt: 'desc' }
 	})
