@@ -29,7 +29,8 @@ const getStudentBookings = async (studentId: string) => {
 					user: { select: { name: true, image: true } }
 				}
 			},
-			review: true
+			review: true,
+			payment: true
 		},
 		orderBy: { createdAt: 'desc' }
 	})
@@ -48,7 +49,8 @@ const getTutorBookings = async (userId: string) => {
 			student: {
 				select: { name: true, image: true }
 			},
-			review: true
+			review: true,
+			payment: true
 		},
 		orderBy: { createdAt: 'desc' }
 	})
@@ -73,6 +75,10 @@ const updateBookingStatus = async (
 	if (callerRole === 'TUTOR' && status === 'COMPLETED') {
 		if (new Date() < booking.endTime)
 			throw new Error('Session cannot be marked complete before the end time')
+
+		const payment = await prisma.payment.findUnique({ where: { bookingId } })
+		if (!payment || payment.status !== 'PAID')
+			throw new Error('Student must complete payment before the session can be marked complete')
 	}
 
 	return prisma.booking.update({
