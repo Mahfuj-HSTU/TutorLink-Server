@@ -6,21 +6,46 @@ import { MainRouter } from './routes/index.ts'
 
 const app = express()
 
+const allowedOrigins = (process.env.APP_URL || 'http://localhost:3000')
+  .split(',')
+  .map((u) => u.trim().replace(/\/$/, ''))
+
+const authNodeHandler = toNodeHandler(auth)
+app.use('/api/auth', (req, res) => {
+  const requestOrigin = req.headers.origin?.replace(/\/$/, '')
+  const _set = res.setHeader.bind(res)
+  ;(res as any).setHeader = (name: string, value: any) => {
+    if (name.toLowerCase() === 'access-control-allow-origin') {
+      const reflected =
+        requestOrigin && allowedOrigins.includes(requestOrigin)
+          ? requestOrigin
+          : allowedOrigins[0]
+      return _set(name, reflected)
+    }
+    return _set(name, value)
+  }
+  authNodeHandler(req, res)
+})
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(
-	cors({
-		origin: process.env.APP_URL!,
-		credentials: true
-})
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+        callback(null, origin ?? allowedOrigins[0])
+      } else {
+        callback(new Error(`CORS: origin ${origin} not allowed`))
+      }
+    },
+    credentials: true
+  })
 )
-
-app.use('/api/auth', toNodeHandler(auth))
 
 app.use('/api', MainRouter)
 
 app.get('/', (req, res) => {
-	res.send('Tutor Link Server is Running')
+  res.send('Tutor Link Server is Running')
 })
 
 export default app
