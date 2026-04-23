@@ -10,25 +10,6 @@ const allowedOrigins = (process.env.APP_URL || 'http://localhost:3000')
   .split(',')
   .map((u) => u.trim().replace(/\/$/, ''))
 
-const authNodeHandler = toNodeHandler(auth)
-app.use('/api/auth', (req, res) => {
-  const requestOrigin = req.headers.origin?.replace(/\/$/, '')
-  const _set = res.setHeader.bind(res)
-  ;(res as any).setHeader = (name: string, value: any) => {
-    if (name.toLowerCase() === 'access-control-allow-origin') {
-      const reflected =
-        requestOrigin && allowedOrigins.includes(requestOrigin)
-          ? requestOrigin
-          : allowedOrigins[0]
-      return _set(name, reflected)
-    }
-    return _set(name, value)
-  }
-  authNodeHandler(req, res)
-})
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -42,9 +23,22 @@ app.use(
   })
 )
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+const authNodeHandler = toNodeHandler(auth)
+app.use('/api/auth', (req, res) => {
+  const _set = res.setHeader.bind(res)
+  ;(res as any).setHeader = (name: string, value: any) => {
+    if (name.toLowerCase() === 'access-control-allow-origin') return res
+    return _set(name, value)
+  }
+  authNodeHandler(req, res)
+})
+
 app.use('/api', MainRouter)
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('Tutor Link Server is Running')
 })
 
