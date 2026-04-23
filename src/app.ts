@@ -9,6 +9,9 @@ const app = express()
 const allowedOrigins = (process.env.APP_URL || 'http://localhost:3000')
   .split(',')
   .map((u) => u.trim().replace(/\/$/, ''))
+const isHttps = (
+  process.env.BETTER_AUTH_URL || 'http://localhost:5000'
+).startsWith('https://')
 
 app.use(
   cors({
@@ -30,7 +33,18 @@ const authNodeHandler = toNodeHandler(auth)
 app.use('/api/auth', (req, res) => {
   const _set = res.setHeader.bind(res)
   ;(res as any).setHeader = (name: string, value: any) => {
-    if (name.toLowerCase() === 'access-control-allow-origin') return res
+    const lower = name.toLowerCase()
+    if (lower === 'access-control-allow-origin') return res
+    if (isHttps && lower === 'set-cookie') {
+      const list: string[] = Array.isArray(value) ? value : [String(value)]
+      const patched = list.map((c) => {
+        let cookie = c.replace(/;\s*SameSite=[^;]*/gi, '')
+        if (!/;\s*Secure\b/i.test(cookie)) cookie += '; Secure'
+        cookie += '; SameSite=None'
+        return cookie
+      })
+      return _set(name, patched)
+    }
     return _set(name, value)
   }
   authNodeHandler(req, res)

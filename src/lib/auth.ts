@@ -8,7 +8,9 @@ const allowedOrigins = appUrls
   .map((url) => url.trim())
   .filter((url) => url.length > 0)
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd =
+	process.env.NODE_ENV === 'production' ||
+	(process.env.BETTER_AUTH_URL || 'http://localhost:5000').startsWith('https://')
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
