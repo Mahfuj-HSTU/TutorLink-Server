@@ -3,40 +3,36 @@ import { ReviewService } from './review.service.ts'
 import { asyncHandler } from '../../lib/asyncHandler.ts'
 
 const createReview = asyncHandler(async (req: Request, res: Response) => {
-	const studentId = req.user.id
-
-	const result = await ReviewService.createReview(studentId, req.body)
-
-	res.status(201).json({
-		success: true,
-		data: result
-	})
+  const studentId = req.user.id
+  const result = await ReviewService.createReview(studentId, req.body)
+  res.status(201).json({
+    success: true,
+    data: result
+  })
 })
 
 const getTutorReviews = asyncHandler(async (req: Request, res: Response) => {
-	const result = await ReviewService.getTutorReviews(req.params.id as string)
-
-	res.status(200).json({
-		success: true,
-		data: result
-	})
+  const result = await ReviewService.getTutorReviews(req.params.id as string)
+  res.status(200).json({
+    success: true,
+    data: result
+  })
 })
 
 const updateReview = asyncHandler(async (req: Request, res: Response) => {
-	const result = await ReviewService.updateReview(
-		req.user.id,
-		req.params.id as string,
-		req.body
-	)
-
-	res.status(200).json({
-		success: true,
-		data: result
-	})
+  const result = await ReviewService.updateReview(
+    req.user.id,
+    req.params.id as string,
+    req.body
+  )
+  res.status(200).json({
+    success: true,
+    data: result
+  })
 })
 
 export const ReviewController = {
-	createReview,
-	getTutorReviews,
-	updateReview
+  createReview,
+  getTutorReviews,
+  updateReview
 }

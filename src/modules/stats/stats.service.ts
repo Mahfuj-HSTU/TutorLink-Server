@@ -23,7 +23,6 @@ const getFeaturedTutor = async () => {
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 
-  // Find the tutor with the highest total earnings from completed bookings
   const topEarners = await prisma.booking.groupBy({
     by: ['tutorId'],
     where: { status: 'COMPLETED' },
@@ -32,7 +31,6 @@ const getFeaturedTutor = async () => {
     take: 1
   })
 
-  // Fall back to highest-rated tutor if no completed bookings exist
   let tutorId: string | null = topEarners[0]?.tutorId ?? null
   if (!tutorId) {
     const fallback = await prisma.tutorProfile.findFirst({

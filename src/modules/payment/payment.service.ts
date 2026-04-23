@@ -5,7 +5,7 @@ import SSLCommerzPayment from 'sslcommerz-lts'
 const STORE_ID = process.env.SSL_STORE_ID
 const STORE_PASS = process.env.SSL_STORE_PASSWORD
 const IS_LIVE = process.env.SSL_IS_LIVE === 'true'
-const CLIENT_URL = process.env.CLIENT_URL
+const CLIENT_URL = process.env.APP_URL
 const BACKEND_URL = process.env.BACKEND_URL
 
 const initPayment = async (studentId: string, bookingId: string) => {
@@ -15,7 +15,7 @@ const initPayment = async (studentId: string, bookingId: string) => {
   })
 
   if (!booking) throw new Error('Booking not found')
-  if (booking.studentId !== studentId) throw new Error('Unauthorised')
+  if (booking.studentId !== studentId) throw new Error('Unauthorized')
   if (booking.status !== 'CONFIRMED')
     throw new Error('Only confirmed bookings can be paid')
   if (new Date() < booking.endTime) throw new Error('Session has not ended yet')
@@ -49,7 +49,6 @@ const initPayment = async (studentId: string, bookingId: string) => {
     ship_country: 'Bangladesh'
   }
 
-  // Upsert a PENDING record so we can track it regardless of outcome
   if (existing) {
     await prisma.payment.update({
       where: { bookingId },

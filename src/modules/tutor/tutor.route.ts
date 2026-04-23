@@ -6,32 +6,27 @@ const router = express.Router()
 
 // Public
 router.get('/', TutorController.getAllTutors)
-
-// Tutor: get own profile (must be before /:id)
 router.get('/me', verifyAuth(UserRole.TUTOR), TutorController.getMyProfile)
-
 router.get('/:id', TutorController.getTutorById)
-
-// Tutor Protected
 router.post(
-	'/profile',
-	verifyAuth(UserRole.TUTOR),
-	TutorController.createProfile
+  '/profile',
+  verifyAuth(UserRole.TUTOR),
+  TutorController.createProfile
 )
 router.put(
-	'/profile',
-	verifyAuth(UserRole.TUTOR),
-	TutorController.updateProfile
+  '/profile',
+  verifyAuth(UserRole.TUTOR),
+  TutorController.updateProfile
 )
 router.put(
-	'/categories',
-	verifyAuth(UserRole.TUTOR),
-	TutorController.updateCategories
+  '/categories',
+  verifyAuth(UserRole.TUTOR),
+  TutorController.updateCategories
 )
 router.put(
-	'/availability',
-	verifyAuth(UserRole.TUTOR),
-	TutorController.updateAvailability
+  '/availability',
+  verifyAuth(UserRole.TUTOR),
+  TutorController.updateAvailability
 )
 
 export const TutorRoutes = router

@@ -4,8 +4,6 @@ import prisma from '../lib/prisma.ts'
 async function seed() {
   try {
     console.log('Seeding admin...')
-
-    // Check if admin already exists
     const existingAdmin = await prisma.user.findUnique({
       where: { email: 'admin@tutorlink.com' }
     })
@@ -15,7 +13,6 @@ async function seed() {
       return
     }
 
-    // Use better-auth API to properly hash password and create related records
     const res = await auth.api.signUpEmail({
       body: {
         email: process.env.ADMIN_EMAIL,
