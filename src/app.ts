@@ -8,21 +8,23 @@ const app = express()
 app.set('trust proxy', 1)
 
 const allowedOrigins = (process.env.APP_URL || 'http://localhost:3000')
-  .split(',')
-  .map((u) => u.trim().replace(/\/$/, ''))
-
+	.split(',')
+	.map((u) => u.trim().replace(/\/$/, ''))
 
 app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
-        callback(null, origin ?? allowedOrigins[0])
-      } else {
-        callback(new Error(`CORS: origin ${origin} not allowed`))
-      }
-    },
-    credentials: true
-  })
+	cors({
+		origin: (origin, callback) => {
+			if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+				callback(null, origin ?? allowedOrigins[0])
+			} else {
+				callback(new Error(`CORS: origin ${origin} not allowed`))
+			}
+		},
+		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+		exposedHeaders: ['Set-Cookie']
+	})
 )
 
 app.use(express.json())
@@ -33,7 +35,7 @@ app.use('/api/auth', toNodeHandler(auth))
 app.use('/api', MainRouter)
 
 app.get('/', (_req, res) => {
-  res.send('Tutor Link Server is Running')
+	res.send('Tutor Link Server is Running')
 })
 
 export default app
