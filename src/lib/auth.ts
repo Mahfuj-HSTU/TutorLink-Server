@@ -18,13 +18,16 @@ export const auth = betterAuth({
   }),
   trustedOrigins: allowedOrigins,
   advanced: {
+    crossSubDomainCookies: {
+      enabled: true
+    },
     useSecureCookies: isProd,
-    ...(isProd && {
-      cookies: {
-        session_token: { attributes: { sameSite: 'none', secure: true } },
-        session_data: { attributes: { sameSite: 'none', secure: true } }
-      }
-    })
+    defaultCookieAttributes: isProd
+      ? {
+          sameSite: 'none',
+          secure: true
+        }
+      : undefined
   },
   user: {
     additionalFields: {
