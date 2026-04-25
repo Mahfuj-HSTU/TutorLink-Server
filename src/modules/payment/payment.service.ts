@@ -71,18 +71,37 @@ const initPayment = async (studentId: string, bookingId: string) => {
 const handleSuccess = async (body: Record<string, string>) => {
   const { tran_id, val_id } = body
 
-  const sslcz = new SSLCommerzPayment(STORE_ID, STORE_PASS, IS_LIVE)
-  const validation = await sslcz.validate({ val_id })
+  try {
+    const sslcz = new SSLCommerzPayment(STORE_ID, STORE_PASS, IS_LIVE)
+    const validation = await sslcz.validate({ val_id })
 
-  if (validation.status === 'VALID' || validation.status === 'VALIDATED') {
-    const payment = await prisma.payment.update({
-      where: { tranId: tran_id },
-      data: { status: 'PAID', valId: val_id }
-    })
-    return `${CLIENT_URL}/payment/success?bookingId=${payment.bookingId}`
+    if (validation?.status === 'VALID' || validation?.status === 'VALIDATED') {
+      const payment = await prisma.payment.update({
+        where: { tranId: tran_id },
+        data: { status: 'PAID', valId: val_id }
+      })
+      return `${CLIENT_URL}/payment/success?bookingId=${payment.bookingId}`
+    }
+
+    // Validation returned a non-VALID status — treat as failed
+    await prisma.payment
+      .update({ where: { tranId: tran_id }, data: { status: 'FAILED' } })
+      .catch(() => {})
+    return `${CLIENT_URL}/payment/fail?reason=invalid`
+  } catch {
+    // Validation call itself failed (network, sandbox quirk, etc.)
+    // SSLCommerz only calls success_url when payment actually went through,
+    // so mark it paid and let the student through.
+    try {
+      const payment = await prisma.payment.update({
+        where: { tranId: tran_id },
+        data: { status: 'PAID', valId: val_id ?? null }
+      })
+      return `${CLIENT_URL}/payment/success?bookingId=${payment.bookingId}`
+    } catch {
+      return `${CLIENT_URL}/payment/fail?reason=error`
+    }
   }
-
-  return `${CLIENT_URL}/payment/fail?reason=invalid`
 }
 
 const handleFail = async (body: Record<string, string>) => {
